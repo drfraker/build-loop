@@ -1,0 +1,7 @@
+{
+    "name": "build-loop",
+    "version": "2.0.0",
+    "description": "Run a project with one owner and several AI agent threads in one loop: spec, build plain, verify in a real browser, design, review, return. Includes the playbook skill and an observe-mode Verified: commit trailer hook.",
+    "license": "MIT",
+    "keywords": ["workflow", "agents", "verification", "code-review", "playbook"]
+}

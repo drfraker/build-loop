@@ -1,0 +1,12 @@
+{
+    "name": "build-loop",
+    "owner": { "name": "build-loop" },
+    "metadata": { "description": "The Build Loop plugin for Claude Code." },
+    "plugins": [
+        {
+            "name": "build-loop",
+            "source": "./plugins/build-loop",
+            "description": "Playbook skill, verify skill template, and an observe-mode Verified: trailer hook for running a project with AI agent threads."
+        }
+    ]
+}
