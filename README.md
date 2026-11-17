@@ -8,8 +8,6 @@ Each change runs end to end in a real browser before the push. Each commit says 
 
 ## Install
 
-This repository is private. Ask the owner to add you as a collaborator. Your git must be able to clone it (for example after `gh auth login`, or with an SSH key).
-
 In Claude Code:
 
 ```text
