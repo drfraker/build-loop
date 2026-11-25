@@ -51,7 +51,7 @@ A role lasts for the project; a thread does not. Full rules: "Keep role threads 
 
 - Each role keeps a role file, `docs/roles/<role>.md`: its job, its current state, and loose notes, under about 60 lines.
 - Start a new thread when the role's work ships (a spec section for Builder, a broad pass for Reviewer, a page's design for Designer), or when the thread is slow, compacted, or repeating settled mistakes.
-- Handover: the old thread updates its role file and commits. The new thread starts with "Read docs/roles/<role>.md and the rules file, then continue from State."
+- Handover: the old thread updates its role file and commits. Where every change needs a pull request, a role file changes only at a handover. The new thread starts with "Read docs/roles/<role>.md and the rules file, then continue from State."
 - Threads carry commit ranges, file paths, and frame links, not pasted diffs, logs, or files.
 
 ## Ground rules (summary)
