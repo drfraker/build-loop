@@ -1,5 +1,7 @@
 <!-- Paste into AGENTS.md / CLAUDE.md (or your generated rules source). Fill in <...>. -->
 
+Build loop version: <the newest version in skills/build-loop/references/changelog.md>
+
 ## Design path
 
 - Each change follows the design path in its spec section: no design, plain first, design first, or design system only.

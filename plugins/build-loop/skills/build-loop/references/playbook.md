@@ -94,7 +94,8 @@ Set up the repo before the first ask, so every thread starts from the same files
 5. **Create the project.** Connect the repo, the design tool, and other services. Connect the design tool's MCP server to every agent tool you use, so each one can read the design system and the frames. Paste the ground rules (below) into the project instructions.
 6. **Write the role files and start the threads.** Write `docs/roles/<role>.md` for each role from its starter prompt (below). Start each thread with the first message in "Handover".
 7. **Seed the memory.** Write who owns what, and your standing approvals, for example "Builder pushes to main when the check command passes."
-8. **Write the first spec section** with its "Done when" checks, then send the first ask.
+8. **Record the version.** Write `Build loop version: <version>` in the agent rules file. The newest version is the first entry in `changelog.md`, next to this file. A later update reads this line to know which steps the project still needs.
+9. **Write the first spec section** with its "Done when" checks, then send the first ask.
 
 ## Repo starter files
 
@@ -187,6 +188,8 @@ Design file: <link>, page "<Page>"
 
 ```markdown
 # Project rules
+
+Build loop version: <version>
 
 ## Scope and safety
 - Use only synthetic data in tests, seeds, logs, and screenshots.

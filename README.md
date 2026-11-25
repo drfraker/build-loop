@@ -17,9 +17,31 @@ In Claude Code:
 /plugin install build-loop@build-loop
 ```
 
-To update later: `/plugin marketplace update build-loop`.
-
 No Claude Code? Copy `plugins/build-loop/skills/build-loop/` into your agent's skills folder, or give it `references/playbook.md` as a project document.
+
+## Update
+
+An update has two parts: the plugin, and each project that uses it.
+
+**1. Update the plugin.** Auto-update is off by default for this marketplace. In Claude Code:
+
+```text
+/plugin marketplace update build-loop
+```
+
+Then in a shell:
+
+```text
+claude plugin update build-loop@build-loop
+```
+
+Restart Claude Code, or run `/reload-plugins`. To skip these steps next time, turn on auto-update for the marketplace under `/plugin`, Marketplaces.
+
+If you copied the skill folder instead of installing the plugin, copy `plugins/build-loop/skills/build-loop/` again.
+
+**2. Update each project.** A project copies rules, role prompts, and templates out of the playbook, so the new plugin does not change it. In the project, say: **"Update this project to the latest build loop."** The agent reads the `Build loop version:` line in the project's rules file, does the project steps for each newer version, opens one pull request, and lists what you must paste into your project instructions.
+
+The versions and their project steps are in the [changelog](plugins/build-loop/skills/build-loop/references/changelog.md).
 
 ## Use
 
@@ -33,7 +55,7 @@ In a new project, say: **"Set up this project with the build loop."** The agent 
 
 | Part | What it does |
 | --- | --- |
-| `skills/build-loop` | The playbook: roles, Day 0 setup, repo starter files, the four design paths, the 8-step loop, role files and thread handover, ground rules, starter prompts for each role, how to verify, and lessons learned. |
+| `skills/build-loop` | The playbook: roles, Day 0 setup, repo starter files, the four design paths, the 8-step loop, role files and thread handover, ground rules, starter prompts for each role, how to verify, and lessons learned. Also the changelog, with the project steps for each version. |
 | `hooks/verified-trailer.sh` | Runs after each `git commit` that the agent makes. If the message has no `Verified:` trailer, it logs the commit to `.claude/logs/verified-trailer.log` in your project and reminds the agent. Observe mode: it never blocks. Needs `jq` and `git`. Add `.claude/logs/` to your `.gitignore`. |
 | `templates/verify-skill/` | A template `verify` skill to copy into each repo. It drives the changed flow with Playwright, saves desktop and phone screenshots, and fails on page errors, console errors, HTTP errors, or a page that scrolls sideways. You write `start.sh` and `stop.sh` for your stack. |
 | `templates/review-lessons.md` | A starter review lessons file. Each lesson has a trigger, a check, and a source. |

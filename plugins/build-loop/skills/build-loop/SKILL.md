@@ -1,6 +1,6 @@
 ---
 name: build-loop
-description: Set up and run a software project where one owner works with several AI agent threads (builder, designer, reviewer, docs) in one repeatable loop, with each change verified in the running app before push. Use when starting a new project, when asked to set up a project with the build loop, when asked how a change should move from ask to merge, when deciding whether a change needs design before build or build before design, or when a role thread (builder, reviewer, designer) has grown long, slow, or cluttered and needs a handover to a fresh thread.
+description: Set up and run a software project where one owner works with several AI agent threads (builder, designer, reviewer, docs) in one repeatable loop, with each change verified in the running app before push. Use when starting a new project, when asked to set up a project with the build loop, when asked to update a project to the latest build loop, when asked how a change should move from ask to merge, when deciding whether a change needs design before build or build before design, or when a role thread (builder, reviewer, designer) has grown long, slow, or cluttered and needs a handover to a fresh thread.
 ---
 
 # Build Loop
@@ -13,9 +13,20 @@ Follow the section "Start a project from this playbook" in `references/playbook.
 
 1. Ask the owner for the product spec (or a short description) and the stack. Do not start before you have it.
 2. Ask which screens the first version needs and what each one does, and write the screen list into the spec. For web apps, recommend React with shadcn/ui unless the owner chooses another stack. Recommend that the "Look and brand" questions (name, colors, feel, logo state) wait until the first screens work plain; ask them now only if the owner already has a brand or wants the design system started.
-3. Do Day 0: repo, one check command (tested to fail when a test fails), seed data and one rebuild command, fakes for every outside service, the `verify` skill and the `Verified:` trailer hook, the spec with "Done when" IDs, the rules file, the review lessons file, `docs/design/`, and a role file in `docs/roles/` for each role.
+3. Do Day 0: repo, one check command (tested to fail when a test fails), seed data and one rebuild command, fakes for every outside service, the `verify` skill and the `Verified:` trailer hook, the spec with "Done when" IDs, the rules file, the review lessons file, `docs/design/`, a role file in `docs/roles/` for each role, and the line `Build loop version: <newest version in references/changelog.md>` in the rules file.
 4. Write the project instructions (roles, owners, the 8-step loop, the four design paths, ground rules) and give the owner the first message for each role thread.
 5. Tell the owner what is done and what still needs their answer, in one list.
+
+## When the owner asks to update a project
+
+A project copies rules, role prompts, and templates out of this playbook, so a new version of the playbook does not reach it by itself. `references/changelog.md` lists, for each version, the project steps that bring a project up to date.
+
+1. Find the project's version: the line `Build loop version:` in the agent rules file or the source it is generated from. With no line, work it out: role files in `docs/roles/` mean 2.1.0; a `verify` skill and a `Verified:` trailer rule mean 2.0.0; neither means 1.x.
+2. Read `references/changelog.md`. Take every version newer than the project's, oldest first, and do its project steps. Skip a step that is already done.
+3. Fit each step to the project: its rules file source (some projects generate `AGENTS.md` and `CLAUDE.md` from another folder), its role names, its base branch, and its check command. Keep the project's own decisions; change only what the step names.
+4. Put the update on its own branch and pull request, or in its own commit where the project pushes to main. It changes check files, so Reviewer reads it before any change that depends on it.
+5. Leave out a step that you cannot test, for example the verify skill's start script when you cannot run the app. Name it on the version line: `Build loop version: 2.1.0 (not applied: 2.0.0 step 1)`.
+6. Report in one list: what changed, what you left out and why, and what the owner must do outside the repo, with the exact text to paste.
 
 ## The loop
 
