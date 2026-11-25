@@ -5,8 +5,16 @@ The newest version is first. Each version lists what changed, and the project st
 A project records its version in one line in its agent rules file:
 
 ```text
-Build loop version: 2.1.0
+Build loop version: 2.2.0
 ```
+
+## 2.2.0 (2026-11-25)
+
+What changed:
+
+- **Codex.** The repo is also a Codex plugin marketplace (`.agents/plugins/marketplace.json`), and the plugin has a Codex manifest (`.codex-plugin/plugin.json`). The playbook skill is the same file for both tools. The README has the install steps.
+
+Project steps, from 2.1.1: none. A project may set `Build loop version: 2.2.0` in its agent rules file.
 
 ## 2.1.1 (2026-11-25)
 

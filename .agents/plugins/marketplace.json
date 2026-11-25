@@ -1,0 +1,20 @@
+{
+    "name": "build-loop",
+    "interface": {
+        "displayName": "Build Loop"
+    },
+    "plugins": [
+        {
+            "name": "build-loop",
+            "source": {
+                "source": "local",
+                "path": "./plugins/build-loop"
+            },
+            "policy": {
+                "installation": "AVAILABLE",
+                "authentication": "ON_INSTALL"
+            },
+            "category": "Productivity"
+        }
+    ]
+}
