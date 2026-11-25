@@ -1,6 +1,6 @@
 # Build Loop
 
-A Claude plugin for running a software project with one human owner and a few AI agent threads (Builder, Reviewer, Designer, Docs, Walkthrough tester). Every change goes around the same loop:
+A plugin for Claude and Codex for running a software project with one human owner and a few AI agent threads (Builder, Reviewer, Designer, Docs, Walkthrough tester). Every change goes around the same loop:
 
 Ask → Spec → Design path → Build and design → **Verify, then push** → Notify → Check → Return
 
@@ -16,6 +16,7 @@ You install the plugin once, and it serves all your projects. Each project then 
 | --- | --- | --- |
 | The Claude desktop app or claude.ai | On your account | Chat, cloud tasks, and Claude Code signed in to the same account |
 | Claude Code on one computer | In Claude Code | Every project on that computer, or one repo |
+| Codex on one computer | In Codex | Codex on that computer |
 | Another agent tool | Copy the skill folder | That tool |
 
 ### On your Claude account (desktop app or claude.ai)
@@ -44,6 +45,35 @@ In the desktop app's Code tab, for a local session: click **+** next to the prom
 
 If the plugin is already on your Claude account, do not also install it here. The copy installed in Claude Code wins over the account copy and can hide its updates.
 
+### In Codex
+
+Add this repo as a plugin marketplace:
+
+```bash
+codex plugin marketplace add drfraker/build-loop
+```
+
+Then open the Plugins Directory in the ChatGPT desktop app, choose the **Build Loop** marketplace, and install the **build-loop** plugin. To turn it on for one trusted project only, add this to that project's `.codex/config.toml`:
+
+```toml
+[plugins."build-loop@build-loop"]
+enabled = true
+```
+
+Or skip the plugin and link the skill folder. Codex reads skills from `~/.agents/skills` and follows links:
+
+```bash
+git clone https://github.com/drfraker/build-loop ~/code/build-loop
+mkdir -p ~/.agents/skills
+ln -s ~/code/build-loop/plugins/build-loop/skills/build-loop ~/.agents/skills/build-loop
+```
+
+Three limits in Codex:
+
+- Codex gets the playbook skill. The `Verified:` trailer hook was written for Claude Code and is not tested in Codex. Codex skips a plugin's hooks until you review and trust them.
+- The Codex docs do not say that plugins load in Codex cloud tasks or in GitHub code review. For those, rely on what is in the project's repo: `AGENTS.md` and the files under `.agents/skills`.
+- The Codex files in this repo follow the Codex docs but have not been run in Codex yet. Open an issue if the install fails.
+
 ### Another agent tool
 
 Copy `plugins/build-loop/skills/build-loop/` into your agent's skills folder, or give it `references/playbook.md` as a project document.
@@ -64,6 +94,7 @@ An update has two parts: the plugin, and each project that uses it.
 
 - On your Claude account: nothing to do when **Sync automatically** is on. Otherwise open **Customize > Plugins**, select the marketplace, and choose **Check for updates**.
 - In Claude Code: auto-update is off by default for this marketplace. Run `/plugin marketplace update build-loop`, then `claude plugin update build-loop@build-loop` in a shell, then restart Claude Code or run `/reload-plugins`. To skip these steps next time, turn on auto-update for the marketplace under `/plugin`, Marketplaces.
+- In Codex: run `codex plugin marketplace upgrade build-loop`, then restart the app. With a linked skill folder, run `git -C ~/code/build-loop pull`.
 - A copied skill folder: copy `plugins/build-loop/skills/build-loop/` again.
 
 **2. Update each project.** A project copies rules, role prompts, and templates out of the playbook, so the new plugin does not change it. In the project, say: **"Update this project to the latest build loop."** The agent reads the `Build loop version:` line in the project's rules file, does the project steps for each newer version, opens one pull request, and lists what you must paste into your project instructions.
@@ -111,6 +142,10 @@ The templates live in the plugin folder. Copy them from this repository, or afte
 - **Invariants get property tests.** Use seeded random commands through the real API, with no new library.
 - **Subtract first, and one rule in one place.**
 - **Synthetic data only** in seeds, tests, screenshots, and logs.
+
+## Release
+
+For each release, set the same version in three places: `plugins/build-loop/.claude-plugin/plugin.json`, `plugins/build-loop/.codex-plugin/plugin.json`, and a new first entry in the [changelog](plugins/build-loop/skills/build-loop/references/changelog.md) with its project steps. Claude Code picks up a new copy only when the version changes.
 
 ## License
 

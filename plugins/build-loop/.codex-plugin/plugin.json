@@ -1,0 +1,10 @@
+{
+    "name": "build-loop",
+    "version": "2.2.0",
+    "description": "Run a project with one owner and several AI agent threads in one loop: spec, pick the design path, build and design, verify in a real browser, review, return. Roles keep their state in role files so threads stay small.",
+    "homepage": "https://github.com/drfraker/build-loop",
+    "repository": "https://github.com/drfraker/build-loop",
+    "license": "MIT",
+    "keywords": ["workflow", "agents", "verification", "code-review", "playbook"],
+    "skills": "./skills/"
+}
