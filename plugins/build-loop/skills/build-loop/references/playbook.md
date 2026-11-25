@@ -290,6 +290,8 @@ The role file holds current state only and stays under about 60 lines. Git holds
 
 A role that commits code updates its role file in the same commit. A role that does not commit code (Reviewer, Walkthrough tester) commits its role file alone at the end of each piece of work. That commit goes through the check command and carries a `Verified:` trailer like any other. It needs no Reviewer notice, and Reviewer skips commits that touch only `docs/roles/`.
 
+Where every change needs a pull request, a role file changes only at a handover, in a pull request that touches only `docs/roles/` and the files its notes move to. That pull request needs no review. Between handovers, a role that does not commit code keeps the last commit it processed in project memory, so it does not open a pull request for each piece of work.
+
 ### Where each kind of knowledge goes
 
 Nothing important lives only in a thread.
@@ -313,7 +315,7 @@ Nothing important lives only in a thread.
 
 ### Handover
 
-1. The old thread finishes or parks its work in flight, updates its role file, moves its notes to the proper files, and commits.
+1. The old thread finishes or parks its work in flight, updates its role file, moves its notes to the proper files, and commits (or opens a pull request, where the project needs one).
 2. The Coordinator starts a new thread named by role and number (for example `Builder 3`) with this first message: "You are the <role> for <project>. Read docs/roles/<role>.md and the rules file, then continue from State."
 3. Archive the old thread once the new thread has finished one piece of work correctly.
 
@@ -338,7 +340,7 @@ Paste these rules into the project instructions so that every thread follows the
 - **Production infrastructure comes last.** Build and demo on local machines or one simple staging host with synthetic data. Mock each outside service behind one interface with a fake that tests, seeds, and demos use. Build the production environment (hosting, backups, monitoring, security and compliance review) only when the app is ready for real users, and swap the fakes for the real services then.
 - **Findings have one format.** Severity (P0 to P3), file and line, what breaks, and the fix, sent to the owning thread.
 - **Only P0 and P1 reach the owner.** All other findings stay between the threads.
-- **Commits are the queue; notices are the doorbell.** Reviewer and Documentation each keep the last commit they processed in their role file and work from the git log, so a missed notice loses nothing.
+- **Commits are the queue; notices are the doorbell.** Reviewer and Documentation each keep the last commit they processed in their role file (in project memory between handovers, where every change needs a pull request) and work from the git log, so a missed notice loses nothing.
 - **Check on a timer too.** With no notice, Reviewer checks main every 30 minutes, then backs off to 1, 2, 4, and 8 hours while nothing changes.
 - **Lessons move left.** When a finding repeats, Reviewer proposes a rule or a test and the builder commits it, so the next build avoids the mistake.
 - **The merge gate follows the stage.** With no users, push to main after the full check, under the owner's standing yes. Before real data, changes to money, sign-in, permissions, data isolation, and migrations get review before merge. With users, use pull requests and CI for all changes.

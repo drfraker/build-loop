@@ -23,7 +23,7 @@ Project steps, from 2.0.0:
 2. **Thread rules.** Add the "Threads" rules from the same snippet. Already done when the rules file tells each role to keep its role file current.
 3. **Role files.** Add `docs/roles/<role>.md` for each role the project runs, except the Owner and the Coordinator, from `templates/role-file.md`. Fill "Job" from the role's starter prompt in the playbook, with the project's own values. Fill "State" only with facts you can read from the repo. Each running thread writes the rest of its own State before its next handover. Already done when each role has a file.
 4. **Ownership.** Add to the ownership rules: `docs/roles/<role>.md` belongs to that role only. Reviewer may commit its own role file, and it skips commits that touch only `docs/roles/`.
-5. **Last commit processed.** Reviewer, Documentation, and the Walkthrough tester keep the last commit they processed in their role file, not in memory. Change any rule or prompt that says "in memory".
+5. **Last commit processed.** Reviewer, Documentation, and the Walkthrough tester keep the last commit they processed in their role file, not in memory. Change any rule or prompt that says "in memory". Where every change needs a pull request, leave it in project memory between handovers and write it to the role file at each handover.
 6. **Spec sections.** Each new spec section gets a `Design path:` line. Do not change old sections.
 7. **The project's own copy of the loop.** If the repo has its own build-loop skill or its own description of the loop, make the same changes there: the design path step, the role files, and the handover.
 8. **Record the version.** Set `Build loop version: 2.1.0` in the agent rules file.
