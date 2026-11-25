@@ -8,6 +8,19 @@ A project records its version in one line in its agent rules file:
 Build loop version: 2.1.0
 ```
 
+## 2.1.1 (2026-11-25)
+
+What changed:
+
+- **Install.** The README covers the install on a Claude account (desktop app or claude.ai), the install in Claude Code with its three scopes, and what a project keeps in its repo.
+- **Wording.** The short form of the design-first rule now names its two exceptions: a flow that is not settled (plain first) and a change that existing components cover (design system only). The playbook says that the Coordinator has no role file and starts from project memory.
+
+Project steps, from 2.1.0:
+
+1. **The design-first rule.** If the rules file gives a short form of the rule ("a visible change to a designed page starts with design"), add the two exceptions. Already done when the rules file lists all four design paths.
+2. **A project copy of the loop.** If the repo has a skill or file named `build-loop`, rename it (for example `<project>-build-loop`) and keep in it only what differs from the playbook. Two skills named `build-loop` clash.
+3. **Record the version.** Set `Build loop version: 2.1.1` in the agent rules file.
+
 ## 2.1.0 (2026-11-25)
 
 What changed:
