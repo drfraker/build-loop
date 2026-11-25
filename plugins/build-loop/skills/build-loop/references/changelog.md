@@ -5,8 +5,19 @@ The newest version is first. Each version lists what changed, and the project st
 A project records its version in one line in its agent rules file:
 
 ```text
-Build loop version: 2.2.0
+Build loop version: 2.2.1
 ```
+
+## 2.2.1 (2026-11-25)
+
+What changed:
+
+- **Project rules point to the playbook.** The 2.1.0 steps copied the full design path and thread rules into each project's rules file, so the same rules lived in the plugin and in every repo. The rules snippet now says where the shared rules are, names the design path line and the role files, and leaves room only for what differs in the project. "Update a project" in `SKILL.md` says not to copy the playbook's rules into a project.
+
+Project steps, from 2.2.0:
+
+1. **Shared rules.** In the agent rules file (or its source), replace a copy of the design path rules, the thread rules, or the handover steps with the "Build loop" section of `templates/agent-rules-snippet.md`. Keep what differs in the project. Already done when the rules file points to the `build-loop` skill and does not list the four design paths in full.
+2. **Record the version.** Set `Build loop version: 2.2.1` in the agent rules file.
 
 ## 2.2.0 (2026-11-25)
 

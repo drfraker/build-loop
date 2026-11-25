@@ -2,18 +2,12 @@
 
 Build loop version: <the newest version in skills/build-loop/references/changelog.md>
 
-## Design path
+## Build loop
 
-- Each change follows the design path in its spec section: no design, plain first, design first, or design system only.
-- A new page, or a change whose flow, data, or API is not settled, ships plain first and is designed once it works.
-- A visible change to a page with a design spec in `docs/design/` starts with design, unless its flow is not settled or existing components cover it. The builder builds to the frames in one pass.
-- A change that existing components and patterns cover is built with the design system, and the Designer compares screenshots after.
-- A visual pass changes no behavior.
-
-## Threads
-
-- Keep your role file (`docs/roles/<role>.md`) current: your job, your state, and loose notes. A new thread must be able to continue from it.
-- Send commit ranges, file paths, and frame links. Do not paste diffs, logs, or whole files into a thread.
+- The shared rules (the loop, the four design paths, role files, when to start a new thread, and the handover) are in the `build-loop` skill. Without the plugin, read https://github.com/drfraker/build-loop/blob/main/plugins/build-loop/skills/build-loop/references/playbook.md. Do not copy them here.
+- Each change has a design path in its spec section: `Design path: <no design | plain first | design first | design system only>`.
+- Each role has a role file in `docs/roles/`.
+- Only what differs in this project goes here: <for example, what a plain page is in this stack, or that a role file changes only at a handover because every change needs a pull request>.
 
 ## Verify before a push
 
