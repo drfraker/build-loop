@@ -5,8 +5,16 @@ The newest version is first. Each version lists what changed, and the project st
 A project records its version in one line in its agent rules file:
 
 ```text
-Build loop version: 2.2.1
+Build loop version: 2.2.2
 ```
+
+## 2.2.2 (2026-11-25)
+
+What changed:
+
+- **No second update.** "Update a project" in `SKILL.md` now starts by looking for an open pull request or branch that already updates the build loop, and continues on it. Before, an agent read only the base branch, did not see an update waiting for review, and opened a second one.
+
+Project steps, from 2.2.1: none. A project may set `Build loop version: 2.2.2`.
 
 ## 2.2.1 (2026-11-25)
 

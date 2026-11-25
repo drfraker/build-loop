@@ -21,12 +21,13 @@ Follow the section "Start a project from this playbook" in `references/playbook.
 
 A project copies rules, role prompts, and templates out of this playbook, so a new version of the playbook does not reach it by itself. `references/changelog.md` lists, for each version, the project steps that bring a project up to date.
 
-1. Find the project's version: the line `Build loop version:` in the agent rules file or the source it is generated from. With no line, work it out: role files in `docs/roles/` mean 2.1.0; a `verify` skill and a `Verified:` trailer rule mean 2.0.0; neither means 1.x.
-2. Read `references/changelog.md`. Take every version newer than the project's, oldest first, and do its project steps. Skip a step that is already done.
-3. Fit each step to the project: its rules file source (some projects generate `AGENTS.md` and `CLAUDE.md` from another folder), its role names, its base branch, and its check command. Keep the project's own decisions; change only what the step names. Do not copy the playbook's rules into the project: the rules file points to this skill and holds only what differs in the project.
-4. Put the update on its own branch and pull request, or in its own commit where the project pushes to main. It changes check files, so Reviewer reads it before any change that depends on it.
-5. Leave out a step that you cannot test, for example the verify skill's start script when you cannot run the app. Name it on the version line: `Build loop version: 2.1.0 (not applied: 2.0.0 step 1)`.
-6. Report in one list: what changed, what you left out and why, and what the owner must do outside the repo, with the exact text to paste.
+1. Look for an open pull request or branch that already updates the build loop (its title or the `Build loop version:` line names a version). If one exists, continue on it instead of starting a second one. The base branch does not show it until it merges.
+2. Find the project's version: the line `Build loop version:` in the agent rules file or the source it is generated from. With no line, work it out: role files in `docs/roles/` mean 2.1.0; a `verify` skill and a `Verified:` trailer rule mean 2.0.0; neither means 1.x.
+3. Read `references/changelog.md`. Take every version newer than the project's, oldest first, and do its project steps. Skip a step that is already done.
+4. Fit each step to the project: its rules file source (some projects generate `AGENTS.md` and `CLAUDE.md` from another folder), its role names, its base branch, and its check command. Keep the project's own decisions; change only what the step names. Do not copy the playbook's rules into the project: the rules file points to this skill and holds only what differs in the project.
+5. Put the update on its own branch and pull request, or in its own commit where the project pushes to main. It changes check files, so Reviewer reads it before any change that depends on it.
+6. Leave out a step that you cannot test, for example the verify skill's start script when you cannot run the app. Name it on the version line: `Build loop version: 2.1.0 (not applied: 2.0.0 step 1)`.
+7. Report in one list: what changed, what you left out and why, and what the owner must do outside the repo, with the exact text to paste.
 
 ## The loop
 
