@@ -57,7 +57,7 @@ A role lasts for the project; a thread does not. Full rules: "Keep role threads 
 ## Ground rules (summary)
 
 - Function first for new work. A new feature or page ships plain until its API, data model, and flow are stable. Only then is it designed. A visual pass changes no behavior.
-- Design first for designed pages. Once a page has a design spec, a visible change to it starts with design, unless existing components cover it.
+- Design first for designed pages. Once a page has a design spec, a visible change to it starts with design, unless its flow is not settled or existing components cover it.
 - Roles last; threads do not. What a role knows lives in repo files, so a fresh thread can take over at any time.
 - Production infrastructure comes last. Outside services run as fakes or test modes behind one interface until the app is ready.
 - The repo is the source of truth for specs, design spec text, and rules. They change in the same commit as the code.

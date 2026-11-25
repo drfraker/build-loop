@@ -6,7 +6,7 @@ Build loop version: <the newest version in skills/build-loop/references/changelo
 
 - Each change follows the design path in its spec section: no design, plain first, design first, or design system only.
 - A new page, or a change whose flow, data, or API is not settled, ships plain first and is designed once it works.
-- A visible change to a page with a design spec in `docs/design/` starts with design. The builder builds to the frames in one pass.
+- A visible change to a page with a design spec in `docs/design/` starts with design, unless its flow is not settled or existing components cover it. The builder builds to the frames in one pass.
 - A change that existing components and patterns cover is built with the design system, and the Designer compares screenshots after.
 - A visual pass changes no behavior.
 

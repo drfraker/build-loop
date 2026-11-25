@@ -202,7 +202,7 @@ Build loop version: <version>
 
 ## How we build
 - Data and API first. A new page ships plain (navigation, actions, raw API responses) and works before it is designed.
-- Each change follows the design path in its spec section: no design, plain first, design first, or design system only. A visible change to a page with a design spec in docs/design/ starts with design.
+- Each change follows the design path in its spec section: no design, plain first, design first, or design system only. A visible change to a page with a design spec in docs/design/ starts with design, unless its flow is not settled or existing components cover it.
 - A page with a design spec follows it. A visual pass changes no behavior.
 - Code, files, tables, routes, and config keys use neutral words. The product name lives in one config value.
 
@@ -280,7 +280,7 @@ A role lasts for the whole project. A thread does not. A long thread loads slowl
 
 ### Role file
 
-Each role except the Owner and the Coordinator has a role file, `docs/roles/<role>.md`, in the repo (template in "Repo starter files"). The Coordinator's state is project memory. The role file has three sections:
+Each role except the Owner and the Coordinator has a role file, `docs/roles/<role>.md`, in the repo (template in "Repo starter files"). The Coordinator's state is project memory: who owns what, the current thread for each role, and the "waiting on owner" list. A new Coordinator thread starts from project memory. The role file has three sections:
 
 - **Job.** The starter prompt for the role.
 - **State.** The current thread name, the last commit processed, the work in flight (spec IDs), and the requests or findings waiting on another thread.
@@ -334,7 +334,7 @@ Paste these rules into the project instructions so that every thread follows the
 - **One owner per area.** Two threads never edit the same code. Other threads send requests to the owner of that area.
 - **The spec changes with the code.** Use the same commit, and name the spec IDs in the commit message. When a build differs from the design, the builder lists the difference and the Designer accepts it or asks for a fix.
 - **Function first for new work.** A new feature or page ships plain and low-fidelity (stock components, the main navigation, the actions, and the raw API data) until its API, data model, and flow are defined and stable. Only then does anyone design it. A visual pass changes no behavior.
-- **Design first for designed pages.** Once a page has a design spec, a change to what the user sees on it starts with design, unless existing components cover it. Each change gets one design path: no design, plain first, design first, or design system only.
+- **Design first for designed pages.** Once a page has a design spec, a change to what the user sees on it starts with design, unless its flow is not settled (plain first) or existing components cover it (design system only). Each change gets one design path: no design, plain first, design first, or design system only.
 - **Roles last; threads do not.** Each role keeps its role file in `docs/roles/` current. A thread is replaced when its work ships or when it gets slow, and the new thread starts from the role file.
 - **Threads carry links, not copies.** Send commit ranges, file paths, and frame links. Do not paste diffs, logs, or whole files.
 - **Production infrastructure comes last.** Build and demo on local machines or one simple staging host with synthetic data. Mock each outside service behind one interface with a fake that tests, seeds, and demos use. Build the production environment (hosting, backups, monitoring, security and compliance review) only when the app is ready for real users, and swap the fakes for the real services then.
