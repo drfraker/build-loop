@@ -1,5 +1,18 @@
 <!-- Paste into AGENTS.md / CLAUDE.md (or your generated rules source). Fill in <...>. -->
 
+## Design path
+
+- Each change follows the design path in its spec section: no design, plain first, design first, or design system only.
+- A new page, or a change whose flow, data, or API is not settled, ships plain first and is designed once it works.
+- A visible change to a page with a design spec in `docs/design/` starts with design. The builder builds to the frames in one pass.
+- A change that existing components and patterns cover is built with the design system, and the Designer compares screenshots after.
+- A visual pass changes no behavior.
+
+## Threads
+
+- Keep your role file (`docs/roles/<role>.md`) current: your job, your state, and loose notes. A new thread must be able to continue from it.
+- Send commit ranges, file paths, and frame links. Do not paste diffs, logs, or whole files into a thread.
+
 ## Verify before a push
 
 - Running the app is the main check. A change is verified only when an agent ran it end to end: a browser for web (the `verify` skill), the simulator UI test job for the native app. After `<check command>` passes (it exits non-zero when any step fails), run the `verify` skill on the checklist items of the changed area and attach its screenshots to the Reviewer notice.

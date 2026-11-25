@@ -1,6 +1,6 @@
 ---
 name: build-loop
-description: Set up and run a software project where one owner works with several AI agent threads (builder, designer, reviewer, docs) in one repeatable loop, with each change verified in the running app before push. Use when starting a new project, when asked to set up a project with the build loop, or when asked how a change should move from ask to merge.
+description: Set up and run a software project where one owner works with several AI agent threads (builder, designer, reviewer, docs) in one repeatable loop, with each change verified in the running app before push. Use when starting a new project, when asked to set up a project with the build loop, when asked how a change should move from ask to merge, when deciding whether a change needs design before build or build before design, or when a role thread (builder, reviewer, designer) has grown long, slow, or cluttered and needs a handover to a fresh thread.
 ---
 
 # Build Loop
@@ -12,18 +12,42 @@ The full playbook is in `references/playbook.md`. Read it before you set up a pr
 Follow the section "Start a project from this playbook" in `references/playbook.md`. In short:
 
 1. Ask the owner for the product spec (or a short description) and the stack. Do not start before you have it.
-2. Ask the "Look and brand" questions (name, colors, feel, logo state). For web apps, recommend React with shadcn/ui unless the owner chooses another stack.
-3. Do Day 0: repo, one check command (tested to fail when a test fails), seed data and one rebuild command, fakes for every outside service, the `verify` skill and the `Verified:` trailer hook, the spec with "Done when" IDs, the rules file, the review lessons file, and `docs/design/`.
-4. Write the project instructions (threads, owners, the 8-step loop, ground rules) and give the owner the starter prompt for each role thread.
+2. Ask which screens the first version needs and what each one does, and write the screen list into the spec. For web apps, recommend React with shadcn/ui unless the owner chooses another stack. Recommend that the "Look and brand" questions (name, colors, feel, logo state) wait until the first screens work plain; ask them now only if the owner already has a brand or wants the design system started.
+3. Do Day 0: repo, one check command (tested to fail when a test fails), seed data and one rebuild command, fakes for every outside service, the `verify` skill and the `Verified:` trailer hook, the spec with "Done when" IDs, the rules file, the review lessons file, `docs/design/`, and a role file in `docs/roles/` for each role.
+4. Write the project instructions (roles, owners, the 8-step loop, the four design paths, ground rules) and give the owner the first message for each role thread.
 5. Tell the owner what is done and what still needs their answer, in one list.
 
 ## The loop
 
-Ask → Spec → Build (plain) → Verify, then push → Design (once stable) → Notify → Check → Return.
+Ask → Spec → Design path → Build and design → Verify, then push → Notify → Check → Return.
+
+## Design path (summary)
+
+The order of design and build depends on the change. The Coordinator picks one design path for each change and writes it in the spec section. Full rules: "Pick the design path for each change" in the playbook.
+
+Ask in order and stop at the first match:
+
+1. Does the change alter what the user sees? If no: **No design**.
+2. Are the flow, the data, and the API for this change settled? If no: **Plain first**, even on a designed page.
+3. Does the page have a design spec (`docs/design/<page>.md`)? If no: **Plain first**.
+4. Do existing components and patterns cover the change? If yes: **Design system only**. If no: **Design first**.
+
+Plain first builds the page plain, then designs it once it works. Design first has the Designer update the frames and the design spec before the builder builds, in one pass, to the frames.
+
+## Role threads (summary)
+
+A role lasts for the project; a thread does not. Full rules: "Keep role threads small" in the playbook.
+
+- Each role keeps a role file, `docs/roles/<role>.md`: its job, its current state, and loose notes, under about 60 lines.
+- Start a new thread when the role's work ships (a spec section for Builder, a broad pass for Reviewer, a page's design for Designer), or when the thread is slow, compacted, or repeating settled mistakes.
+- Handover: the old thread updates its role file and commits. The new thread starts with "Read docs/roles/<role>.md and the rules file, then continue from State."
+- Threads carry commit ranges, file paths, and frame links, not pasted diffs, logs, or files.
 
 ## Ground rules (summary)
 
-- Function first. A new feature or page ships plain until its API, data model, and flow are stable. Only then is it designed. A visual pass changes no behavior.
+- Function first for new work. A new feature or page ships plain until its API, data model, and flow are stable. Only then is it designed. A visual pass changes no behavior.
+- Design first for designed pages. Once a page has a design spec, a visible change to it starts with design, unless existing components cover it.
+- Roles last; threads do not. What a role knows lives in repo files, so a fresh thread can take over at any time.
 - Production infrastructure comes last. Outside services run as fakes or test modes behind one interface until the app is ready.
 - The repo is the source of truth for specs, design spec text, and rules. They change in the same commit as the code.
 - One owner per area. Send a request to the owner; two threads never edit the same code.
