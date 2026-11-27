@@ -5,8 +5,19 @@ The newest version is first. Each version lists what changed, and the project st
 A project records its version in one line in its agent rules file:
 
 ```text
-Build loop version: 2.3.0
+Build loop version: 2.3.1
 ```
+
+## 2.3.1 (2026-11-27)
+
+What changed:
+
+- **No copies of the spec grill or pstack rules in projects.** The 2.3.0 rules snippet had a spec grill line and a pstack line. The skill owns both rules, so a project's rules file holds only its own values, such as which flows get a model check, or a pstack call it does not use.
+
+Project steps, from 2.3.0:
+
+1. **Rules file.** Remove a copied spec grill line or pstack line from the agent rules file. Keep project values.
+2. **Record the version.** Set `Build loop version: 2.3.1` in the agent rules file.
 
 ## 2.3.0 (2026-11-27)
 
