@@ -33,6 +33,10 @@ A project copies rules, role prompts, and templates out of this playbook, so a n
 
 Ask → Spec → Design path → Build and design → Verify, then push → Notify → Check → Return.
 
+## Spec grill (summary)
+
+For a new feature, the owning thread grills the owner before it writes the spec: one question at a time, each with a recommended answer, over a fixed list (users, states and moves, permissions, data, errors, money and dates, other paths, out of scope). The spec section then gets a state chart for each record that has states, and a "Done when" ID for each answer. A flow where a rare order of steps loses money or data also gets a model check (TLA+ by default). Full rules: "Grill the spec for a new feature" in the playbook.
+
 ## Design path (summary)
 
 The order of design and build depends on the change. The Coordinator picks one design path for each change and writes it in the spec section. Full rules: "Pick the design path for each change" in the playbook.
@@ -80,6 +84,7 @@ A role lasts for the project; a thread does not. Full rules: "Keep role threads 
 - New gates start in observe mode (log only). The owner chooses when they block.
 - Review the reviewer. Each bug that got past review goes into a replay set; a miss that was visible in the diff becomes a lesson.
 - Each lesson has a trigger (the kind of diff), a check, and a source. The reviewer checks only matching lessons, marks bugs that were already on main as "pre-existing", and prunes stale lessons.
+- Optional skills: where the pstack plugin is installed, the loop calls a few of its skills at fixed steps, and turns its startup hook off in the repo. Without pstack, each step runs as written. Full rules: "Optional skills" in the playbook.
 - Invariants (money, ledgers, idempotent retries) get property tests: seeded random commands through the real API, every rule checked after each command. Use what the test framework already has before you add a library.
 - Native apps: a UI test target runs the touched screens on a simulator in CI against in-memory sample data and keeps the screenshots.
 

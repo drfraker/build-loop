@@ -140,6 +140,8 @@ The templates live in the plugin folder. Copy them from this repository, or afte
 - **Three rounds, then a person.** No flaky tests, and no retrying until green.
 - **New gates start in observe mode.**
 - **Invariants get property tests.** Use seeded random commands through the real API, with no new library.
+- **Grill the spec.** A new feature starts with one question at a time until the spec has no gaps, and a state chart for each record that has states.
+- **pstack is optional.** Where the pstack plugin is installed, the loop calls a few of its skills at fixed steps. See "Optional skills" in the playbook.
 - **Subtract first, and one rule in one place.**
 - **Synthetic data only** in seeds, tests, screenshots, and logs.
 

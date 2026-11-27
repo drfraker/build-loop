@@ -6,6 +6,7 @@ Each lesson is a defect that got past a review at least once. It has a trigger (
 - Reviewer reads this file, the test config, and the gate scripts from main before the change, not from the change.
 - A finding for a bug that was on main before the change is "pre-existing". It does not block the change and goes to the owner as its own item.
 - When a defect repeats, or a bug that was visible in the diff gets past review, the fix commit adds a lesson here with a trigger. Reviewer removes lessons that no longer apply about every 10 broad passes.
+- Before a text lesson, try a test or lint that makes the defect impossible. Each lesson ends with `Enforced by:`, the test that fails on the defect, or `none`. A lesson whose test makes the defect impossible leaves this list. A lesson with no `Enforced by:` counts as `none`.
 
 ## Examples (replace with your own)
 

@@ -5,8 +5,24 @@ The newest version is first. Each version lists what changed, and the project st
 A project records its version in one line in its agent rules file:
 
 ```text
-Build loop version: 2.2.2
+Build loop version: 2.3.0
 ```
+
+## 2.3.0 (2026-11-27)
+
+What changed:
+
+- **Spec grill.** A new feature starts with an interview of the owner: one question at a time, each with a recommended answer, over a fixed list. The spec section gets a state chart for each record that has states. A flow where a rare order of steps loses money or data also gets a model check, with TLA+ by default.
+- **Optional skills.** Where the pstack plugin is installed, the loop calls a few of its skills at fixed steps: `blast-radius` at Spec and Verify, `no-comments` on new suppressions, `thermo-nuclear-code-quality-review` and `maintain-formal-verification-skill` in the Reviewer's broad pass, and `correct` when a defect repeats. Without pstack, each step runs as before. The loop turns pstack's startup hook off in the repo, because its router replaces the loop's pull request and merge rules.
+- **Lessons name their check.** Each review lesson ends with `Enforced by:`. A lesson whose test makes the defect impossible leaves the list.
+
+Project steps, from 2.2.2:
+
+1. **Spec grill.** Add the spec grill line and the pstack line of `templates/agent-rules-snippet.md` to the rules file. In the Builder role file, add the grill to the Job section (see the Builder starter prompt). Already done when the rules file names the spec grill.
+2. **Reviewer.** In the Reviewer role file, add the broad pass calls and "propose a test that makes it impossible" (see the Reviewer starter prompt).
+3. **Lessons.** Add the `Enforced by:` rule to the top of the review lessons file (see `templates/review-lessons.md`). Do not edit each lesson: a lesson with no `Enforced by:` counts as `none`.
+4. **pstack hook.** If pstack is installed on any machine that runs the project's threads, add `.claude/pstack-models.md` with the line `session hook: off`. Skip this step otherwise.
+5. **Record the version.** Set `Build loop version: 2.3.0` in the agent rules file.
 
 ## 2.2.2 (2026-11-25)
 
