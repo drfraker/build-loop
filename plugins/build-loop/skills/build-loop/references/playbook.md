@@ -90,7 +90,7 @@ Set up the repo before the first ask, so every thread starts from the same files
 1. **Create the repo** with the starter files in the next section.
 2. **Make one check command** that runs lint, type checks, front-end tests, and back-end tests, for example `npm run ci` or `composer ci:check`. Builders run it before every push. CI runs the same command when you have CI. Test that it exits non-zero when any step fails: break one test on purpose and run it. A check command that prints a failure and exits 0 is worse than none.
 3. **Make seed data and fakes.** Add synthetic users for each role, sample records, and one command that rebuilds the database. Add a fake for each outside service (payments, email, AI models), so the app runs with no outside accounts. Tests, walkthroughs, screenshots, demos, and the verify skill all use them.
-4. **Add the verify skill and the trailer hook.** Copy the `verify` skill template into the repo and fill in its start command, seed users, and URLs. Add the `Verified:` trailer hook in observe mode (see "Verification" below).
+4. **Add the verify skill and the trailer hook.** Copy the `verify` skill template into the repo and fill in its start command, seed users, and URLs. Add the `Verified:` trailer hook in observe mode (see "Verification" below). Where pstack is installed, add `.claude/pstack-models.md` with the line `session hook: off` (see "Optional skills").
 5. **Create the project.** Connect the repo, the design tool, and other services. Connect the design tool's MCP server to every agent tool you use, so each one can read the design system and the frames. Paste the ground rules (below) into the project instructions.
 6. **Write the role files and start the threads.** Write `docs/roles/<role>.md` for each role from its starter prompt (below). Start each thread with the first message in "Handover".
 7. **Seed the memory.** Write who owns what, and your standing approvals, for example "Builder pushes to main when the check command passes."
@@ -145,6 +145,17 @@ Checklist items: INV-01 to INV-05
 
 ### How it was built
 - <date>, <commit>: what changed from the plan, and why.
+```
+
+**State chart template** (in the spec section, for a record that has states)
+
+```mermaid
+stateDiagram-v2
+    [*] --> Sent: admin sends the invite
+    Sent --> Accepted: invitee opens the link
+    Sent --> Expired: 7 days pass
+    Sent --> Cancelled: admin cancels
+    Accepted --> [*]
 ```
 
 **Design spec template**
@@ -266,13 +277,57 @@ There is no project-level switch from plain first to design first. The test is p
 A change goes around the loop in eight steps. Small fixes skip step 2. No change skips step 5: a change with nothing to run in a browser says so in its trailer (`Verified: none: <reason>`).
 
 1. **Ask.** The owner writes the ask in the project chat. The Coordinator sends it to the thread that owns the area, or starts a thread for new work.
-2. **Spec.** The owning thread writes or changes the spec section first: goal, scope, and "Done when" checks with IDs. The owner approves any change in scope.
+2. **Spec.** The owning thread writes or changes the spec section first: goal, scope, and "Done when" checks with IDs. For a new feature, it grills the owner first (see "Grill the spec for a new feature"). The owner approves any change in scope.
 3. **Design path.** The Coordinator picks the design path for the change, and it is written in the spec section or the routing message (see "Pick the design path for each change").
 4. **Build and design.** The builder and the Designer work in the order the design path gives, with tests for each "Done when" check. On plain first, the builder builds the plain page and takes it through steps 5 to 8; the design and the visual pass follow later as a second trip from this step. On design first, the Designer updates the frames and the design spec, and then the builder builds to them.
-5. **Verify, then push.** The builder rebases on main and runs the full check command. Then it runs the `verify` skill: it starts the app with seed data and fakes, drives the changed flow in a real browser (a simulator for a native app), and saves screenshots. Each commit ends with a `Verified:` trailer that says what ran. The builder pushes only when both pass.
+5. **Verify, then push.** The builder rebases on main and runs the full check command. Then it runs the `verify` skill: it starts the app with seed data and fakes, drives the changed flow in a real browser (a simulator for a native app), and saves screenshots. Each commit ends with a `Verified:` trailer that says what ran. The builder pushes only when both pass. Where pstack is installed, the builder also makes the step 5 calls in "Optional skills".
 6. **Notify.** After each push, the builder sends Reviewer the commit range, one line, and the verify screenshots. It also tells Documentation when users will see the change.
-7. **Check.** Reviewer reviews the exact pushed commits against the spec, and against the rule files as they were on main before the change (so a change cannot loosen its own checks). The Designer compares screenshots to the frames, the Walkthrough tester runs the checklist items for the touched spec IDs, and Documentation updates the articles.
-8. **Return.** Findings go to the owning thread with file, line, and fix. Only P0 and P1 go to the owner. The fix goes around the same loop.
+7. **Check.** Reviewer reviews the exact pushed commits against the spec, and against the rule files as they were on main before the change (so a change cannot loosen its own checks). The Designer compares screenshots to the frames, the Walkthrough tester runs the checklist items for the touched spec IDs, and Documentation updates the articles. In each broad pass, Reviewer also makes the step 7 calls in "Optional skills".
+8. **Return.** Findings go to the owning thread with file, line, and fix. Only P0 and P1 go to the owner. The fix goes around the same loop. When a defect kind repeats, the fixing thread tries to make it impossible with a test before it writes a text lesson (step 8 in "Optional skills").
+
+## Grill the spec for a new feature
+
+A spec written in one pass leaves gaps that show up later as bugs and rework. For each new feature, the owning thread interviews the owner before it writes the spec section. Small fixes and changes to an existing feature skip the grill, as they skip step 2.
+
+1. Ask one question at a time. Give each question a recommended answer, so the owner can answer "yes" or change one word. Read the code and the spec first, and do not ask what they already answer.
+2. Cover this list, in this order, and skip an item only when it does not apply:
+    - Who uses the feature, on which screen, and why.
+    - Each state the main record can be in, and what moves it from one state to the next. Who can make each move.
+    - Permissions, roles, and location or tenant limits.
+    - What the data stores, and what it must never store (private data in URLs, logs, or payloads).
+    - Errors and refusals: what the user sees for each one.
+    - Money, dates, and time zones.
+    - Every other path that does the same thing: API, jobs, commands, the native app.
+    - What is out of scope.
+3. Stop when each item has an answer or says "owner decides later". Add each "later" item to the "Waiting on owner" list with a recommended answer.
+4. Write the spec section from the answers: the goal, the scope, a state chart for each record that has states, and a "Done when" check with an ID for each answer that a test or the walkthrough can prove.
+
+**State chart.** A record that has states gets a Mermaid state chart in its spec section. Each arrow names the step that moves it and who may take it. The chart is the contract for the tests: each arrow gets a test, and each missing arrow (a move that must not happen) gets a refusal test.
+
+**Model check for risky flows.** Some flows break only when steps happen in a rare order: two people act at once, a retry arrives after a timeout, a payment step fails half way. Tests rarely reach these orders. For a flow where such an order loses money or data, the grill marks the flow, and the builder adds a model check to the property tests:
+
+- TLA+ with the TLC model checker is the default. It checks every order of steps in a small model of the flow. TLC needs Java, which is a developer tool only and never ships with the app. A new tool needs the owner's OK in each project.
+- Where pstack is installed, `pstack:create-formal-verification-skill` writes the model and a project skill that reruns it, `pstack:statechart` draws the model as a state chart and shows each broken rule as the shortest path to it, and `pstack:maintain-formal-verification-skill` brings a model back in line after the code changes.
+- A model checks a model, not the app. Replay each broken path as a test against the real code before you call it a bug.
+- Keep it to the few flows that matter (one to three in a product). Property tests stay the everyday check.
+
+## Optional skills
+
+The loop calls some skills from the pstack plugin (https://github.com/michael-denyer/pstack-claude) at fixed steps. pstack is optional. The loop calls a skill only when the session lists it as a `pstack:` skill. When it does not, the step runs as written above, and no step fails or waits because pstack is missing. Do not copy pstack text into a project.
+
+| Step | Who | Skill | When | Without pstack |
+| --- | --- | --- | --- | --- |
+| 2. Spec | Owning thread | `pstack:blast-radius` | The ask states a fact about existing code ("make X public", "X already handles Y"). It proves the fact and lists what reads X before the spec is written. | Read the code. Write the fact as an open question in the spec. |
+| 2. Spec | Builder | `pstack:create-formal-verification-skill` | The grill marked a risky flow (see "Model check for risky flows"). | Property tests only. |
+| 5. Verify, then push | Builder | `pstack:blast-radius` | The diff touches money, sign-in, permissions, tenancy, or migrations. Put the proof output in the Reviewer notice. | The check command and `verify`, as written. |
+| 5. Verify, then push | Builder | `pstack:no-comments`, limited to the new suppression lines | The diff adds a lint or type suppression (`eslint-disable`, `@ts-ignore`, `@phpstan-ignore`, and similar). | Remove the suppression, or write the reason on its line. |
+| 7. Check, broad pass | Reviewer | `pstack:thermo-nuclear-code-quality-review` | Once in each broad pass, on the commits since the last pass. Send only findings that delete code or split a file over 1,000 lines, as P2 or P3. | The broad pass, as written. |
+| 7. Check, broad pass | Reviewer | `pstack:maintain-formal-verification-skill` | The project has model checks, and covered code changed since their last sync. | Rerun the model checks by hand. |
+| 8. Return | Fixing thread | `pstack:correct` | A defect kind is found a second time. It tries, in order, a change of structure, a type, a lint or arch test whose error names the fix, and a test. It writes a text lesson only when none works. The new check must fail on the real past defect. | A text lesson with a trigger. |
+
+- A project can switch off a call in its rules file, for example "Not used: no-comments".
+- pstack has a startup hook that sends every session through its own router (`poteto-mode`). The router has its own pull request, merge, and subagent rules, which the loop replaces. In a project that uses the loop, turn the hook off: add `.claude/pstack-models.md` with the line `session hook: off`. The hook reads that project file before the user's file, so this changes only the one repo. The skills stay callable by name.
+- The other pstack skills overlap the loop (`verify`, the Reviewer, the merge gate) or do other work. The loop does not call them.
 
 ## Keep role threads small
 
@@ -381,7 +436,7 @@ You are the Designer for <project>. Your first job is the design system. Confirm
 **Builder**
 
 ```text
-You are the Builder for <project>. You own the web app, the API, the database, and docs/spec.md in <repo>. Build data and API first. Follow the design path in each spec section. Plain first: build the page plain, and make the visual pass later with no behavior change. Design first: build the behavior and the look in one pass, to the frames in docs/design/<page>.md. Design system only: build with the existing components and patterns. Subtract first: remove what a change makes unneeded, and keep each business rule in one place. Before each push, rebase on main, run <check command>, then run the verify skill on the changed flow; push only when both pass. End each commit with a `Verified:` trailer that says what ran. After three failed rounds on one check, stop and ask <owner>. Change the spec in the same commit and name the spec IDs in the commit message. After each push, send Reviewer the commit range, one line, and the verify screenshots, and tell Documentation about user-facing changes. Fix the findings and bugs that come back to you. Update docs/roles/builder.md in the same commit as your work.
+You are the Builder for <project>. You own the web app, the API, the database, and docs/spec.md in <repo>. For a new feature, grill <owner> before you write the spec section, one question at a time with a recommended answer, and write a state chart for each record that has states. Build data and API first. Follow the design path in each spec section. Plain first: build the page plain, and make the visual pass later with no behavior change. Design first: build the behavior and the look in one pass, to the frames in docs/design/<page>.md. Design system only: build with the existing components and patterns. Subtract first: remove what a change makes unneeded, and keep each business rule in one place. Before each push, rebase on main, run <check command>, then run the verify skill on the changed flow; push only when both pass. End each commit with a `Verified:` trailer that says what ran. After three failed rounds on one check, stop and ask <owner>. Change the spec in the same commit and name the spec IDs in the commit message. After each push, send Reviewer the commit range, one line, and the verify screenshots, and tell Documentation about user-facing changes. Fix the findings and bugs that come back to you. Update docs/roles/builder.md in the same commit as your work.
 ```
 
 **App builder**
@@ -393,7 +448,7 @@ You are the App builder for <project>. You own the native app in <repo>/<app fol
 **Reviewer**
 
 ```text
-You are the Reviewer for <project>. Review every push to main in <repo>, from the last commit you reviewed (keep it in docs/roles/reviewer.md) to the newest. Skip commits that touch only docs/roles/. Review the exact pushed commits against docs/spec.md and against the rule files, review lessons, test config, and gate scripts as they were on main before the change, not as the change left them. List the lessons whose trigger matches the diff and the result of each. Mark a bug that was already on main as "pre-existing": it does not block the change. Keep a replay set of bugs that got past you; a miss that was visible in the diff becomes a lesson with a trigger. Send each finding to the thread that owns the code: severity P0 to P3, file and line, what breaks, and the fix. Tell <owner> only about P0 and P1. Do a broad pass about every 10 merges. When a finding repeats, propose a lesson with a trigger, or a test. Do not change app code; commit only your role file. With no notice, check main every 30 minutes, and back off to 8 hours while nothing changes.
+You are the Reviewer for <project>. Review every push to main in <repo>, from the last commit you reviewed (keep it in docs/roles/reviewer.md) to the newest. Skip commits that touch only docs/roles/. Review the exact pushed commits against docs/spec.md and against the rule files, review lessons, test config, and gate scripts as they were on main before the change, not as the change left them. List the lessons whose trigger matches the diff and the result of each. Mark a bug that was already on main as "pre-existing": it does not block the change. Keep a replay set of bugs that got past you; a miss that was visible in the diff becomes a lesson with a trigger. Send each finding to the thread that owns the code: severity P0 to P3, file and line, what breaks, and the fix. Tell <owner> only about P0 and P1. Do a broad pass about every 10 merges. When a finding repeats, propose a test that makes it impossible, or a lesson with a trigger. Where pstack is installed, make the step 7 calls in "Optional skills" in each broad pass. Do not change app code; commit only your role file. With no notice, check main every 30 minutes, and back off to 8 hours while nothing changes.
 ```
 
 **Documentation**
@@ -464,10 +519,10 @@ A hook after each `git commit` logs a commit with no trailer and tells the agent
 **Review lessons.** Each lesson has a trigger, a check, and a source:
 
 ```markdown
-- **K1 Lock type.** Trigger: a row lock on a record that other rows reference. Check: use a lock that does not block foreign key checks of inserts; take the stronger lock only on a row that the action deletes. Source: #123.
+- **K1 Lock type.** Trigger: a row lock on a record that other rows reference. Check: use a lock that does not block foreign key checks of inserts; take the stronger lock only on a row that the action deletes. Source: #123. Enforced by: none.
 ```
 
-Group lessons by area (locks and transactions, one rule on every path, data people read, clients, sign-in, gates). Reviewer lists the triggered lessons and the result of each in the review note.
+Group lessons by area (locks and transactions, one rule on every path, data people read, clients, sign-in, gates). Reviewer lists the triggered lessons and the result of each in the review note. `Enforced by:` names the test or lint that fails on the defect, or `none`. A lesson whose test makes the defect impossible leaves the list.
 
 **The replay set.** Each bug that got past Reviewer goes into a list with the commit that Reviewer passed. Now and then, Reviewer reviews those commits again and reports how many it finds. Each miss that was visible in the diff becomes a lesson.
 

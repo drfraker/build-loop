@@ -7,6 +7,8 @@ Build loop version: <the newest version in skills/build-loop/references/changelo
 - The shared rules (the loop, the four design paths, role files, when to start a new thread, and the handover) are in the `build-loop` skill. Without the plugin, read https://github.com/drfraker/build-loop/blob/main/plugins/build-loop/skills/build-loop/references/playbook.md. Do not copy them here.
 - Each change has a design path in its spec section: `Design path: <no design | plain first | design first | design system only>`.
 - Each role has a role file in `docs/roles/`.
+- A new feature starts with the spec grill: one question at a time, each with a recommended answer, until each item on the grill list has an answer. A record that has states gets a state chart in its spec section.
+- pstack calls ("Optional skills" in the playbook): <used where installed | not used: ...>.
 - Only what differs in this project goes here: <for example, what a plain page is in this stack, or that a role file changes only at a handover because every change needs a pull request>.
 
 ## Verify before a push

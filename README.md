@@ -106,12 +106,13 @@ The versions and their project steps are in the [changelog](plugins/build-loop/s
 - "How should this change move from ask to merge?"
 - "Does this change need design first?"
 - "My Builder thread is slow. Hand it over to a new thread."
+- "Grill me on the spec for this new feature."
 
 ## What the plugin includes
 
 | Part | What it does |
 | --- | --- |
-| `skills/build-loop` | The playbook: roles, Day 0 setup, repo starter files, the four design paths, the 8-step loop, role files and thread handover, ground rules, starter prompts for each role, how to verify, and lessons learned. Also the changelog, with the project steps for each version. |
+| `skills/build-loop` | The playbook: roles, Day 0 setup, repo starter files, the four design paths, the 8-step loop, the spec grill with state charts and model checks, the optional pstack calls, role files and thread handover, ground rules, starter prompts for each role, how to verify, and lessons learned. Also the changelog, with the project steps for each version. |
 | `hooks/verified-trailer.sh` | Runs after each `git commit` that the agent makes. If the message has no `Verified:` trailer, it logs the commit to `.claude/logs/verified-trailer.log` in your project and reminds the agent. Observe mode: it never blocks. Needs `jq` and `git`. Add `.claude/logs/` to your `.gitignore`. |
 | `templates/verify-skill/` | A template `verify` skill to copy into each repo. It drives the changed flow with Playwright, saves desktop and phone screenshots, and fails on page errors, console errors, HTTP errors, or a page that scrolls sideways. You write `start.sh` and `stop.sh` for your stack. |
 | `templates/review-lessons.md` | A starter review lessons file. Each lesson has a trigger, a check, and a source. |
@@ -119,6 +120,22 @@ The versions and their project steps are in the [changelog](plugins/build-loop/s
 | `templates/agent-rules-snippet.md` | Design path, thread, verification, and simplicity rules to paste into `AGENTS.md` or `CLAUDE.md`. |
 
 The templates live in the plugin folder. Copy them from this repository, or after a Claude Code install find them under `~/.claude/plugins/`. The hook runs in Claude Code.
+
+### Optional: pstack
+
+[pstack](https://github.com/michael-denyer/pstack-claude) is a separate skill plugin. The build loop does not need it. Where it is installed, the loop calls a few of its skills at fixed steps: `blast-radius` at Spec and before risky pushes, `no-comments` on new lint suppressions, `thermo-nuclear-code-quality-review` and `maintain-formal-verification-skill` in the Reviewer's broad pass, `correct` when a defect repeats, and the formal verification skills for risky flows. Without it, each step runs as written. "Optional skills" in the playbook has the full table.
+
+pstack's startup hook sends each session through its own router, which has its own pull request and merge rules. In a repo that uses the build loop, turn it off with `.claude/pstack-models.md`:
+
+```markdown
+# pstack model configuration
+
+This project's sheet. In this repository it replaces the user's pstack-models.md; ignore that sheet's lines.
+
+session hook: off
+```
+
+The model checks for risky flows use TLA+ with the TLC model checker by default. TLC needs Java on the machines that run the check. Java is a developer tool only.
 
 ### Set up the verify skill in a repo
 
@@ -140,6 +157,8 @@ The templates live in the plugin folder. Copy them from this repository, or afte
 - **Three rounds, then a person.** No flaky tests, and no retrying until green.
 - **New gates start in observe mode.**
 - **Invariants get property tests.** Use seeded random commands through the real API, with no new library.
+- **Grill the spec.** A new feature starts with one question at a time until the spec has no gaps, and a state chart for each record that has states.
+- **pstack is optional.** Where the pstack plugin is installed, the loop calls a few of its skills at fixed steps. See "Optional skills" in the playbook.
 - **Subtract first, and one rule in one place.**
 - **Synthetic data only** in seeds, tests, screenshots, and logs.
 
